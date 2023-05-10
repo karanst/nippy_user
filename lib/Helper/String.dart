@@ -5,6 +5,8 @@ final Uri getSliderApi = Uri.parse(baseUrl + 'get_slider_images');
 final Uri getCatApi = Uri.parse(baseUrl + 'get_categories');
 final Uri getSubCatBySellerId = Uri.parse(baseUrl + 'sub_cat');
 
+final Uri getDriverLocationApi = Uri.parse(baseUrl + 'get_driver_location');
+
 final Uri getSectionApi = Uri.parse(baseUrl + 'get_sections');
 final Uri getSettingApi = Uri.parse(baseUrl + 'get_settings');
 final Uri getOtpSetting = Uri.parse(baseUrl + 'get_otp');

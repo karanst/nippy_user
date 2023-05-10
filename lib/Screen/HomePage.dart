@@ -109,6 +109,46 @@ class _HomePageState extends State<HomePage>
     }
   }
 
+  double? lat, long;
+  LocationPermission? permission;
+  Position? currentLocation;
+  Future getUserCurrentLocation() async {
+
+    permission = await Geolocator.requestPermission();
+    await Geolocator.getCurrentPosition(desiredAccuracy: LocationAccuracy.high)
+        .then((position) {
+      if (mounted)
+        setState(() {
+          currentLocation = position;
+          latitude = currentLocation!.latitude;
+          longitude = currentLocation!.longitude;
+        });
+    });
+    Position position = await Geolocator.getCurrentPosition(
+        desiredAccuracy: LocationAccuracy.high);
+    var loc = Provider.of<LocationProvider>(context, listen: false);
+
+    latitude = position.latitude.toString();
+    longitude = position.longitude.toString();
+    List<Placemark> placemark = await placemarkFromCoordinates(
+        double.parse(latitude!), double.parse(longitude!),
+        localeIdentifier: "en");
+
+    pinController.text = placemark[0].postalCode!;
+    if (mounted) {
+      setState(() {
+        pinController.text = placemark[0].postalCode!;
+        currentAddress.text = "${placemark[0].street}, ${placemark[0].subLocality}, ${placemark[0].locality}";
+        latitude = position.latitude.toString();
+        longitude = position.longitude.toString();
+        loc.lng = position.longitude.toString();
+        loc.lat = position.latitude.toString();
+        callApi();
+      });
+    }
+    print("LOCATION===" + currentLocation.toString());
+  }
+
   //String? curPin;
 
   @override
@@ -117,7 +157,8 @@ class _HomePageState extends State<HomePage>
   @override
   void initState() {
     super.initState();
-    getCurrentLoc();
+    getUserCurrentLocation();
+    // getCurrentLoc();
     buttonController = new AnimationController(
         duration: new Duration(milliseconds: 2000), vsync: this);
 

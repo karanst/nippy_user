@@ -11,6 +11,8 @@ import 'package:eshop_multivendor/Provider/UserProvider.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:geocoding/geocoding.dart';
+import 'package:geolocator/geolocator.dart';
 import 'package:http/http.dart';
 import 'package:paytm/paytm.dart';
 import 'package:provider/provider.dart';
@@ -104,9 +106,49 @@ class StateCart extends State<Cart> with TickerProviderStateMixin {
   //List<PaymentItem> _gpaytItems = [];
   //Pay _gpayClient;
 
+  LocationPermission? permission;
+  Position? currentLocation;
+  Future getUserCurrentLocation() async {
+
+    permission = await Geolocator.requestPermission();
+    await Geolocator.getCurrentPosition(desiredAccuracy: LocationAccuracy.high)
+        .then((position) {
+      if (mounted)
+        setState(() {
+          currentLocation = position;
+          latitude = currentLocation!.latitude.toString();
+          longitude = currentLocation!.longitude.toString();
+        });
+    });
+    Position position = await Geolocator.getCurrentPosition(
+        desiredAccuracy: LocationAccuracy.high);
+    var loc = Provider.of<LocationProvider>(context, listen: false);
+
+    latitude = position.latitude.toString();
+    longitude = position.longitude.toString();
+    List<Placemark> placemark = await placemarkFromCoordinates(
+        double.parse(latitude!), double.parse(longitude!),
+        localeIdentifier: "en");
+
+    // pinController.text = placemark[0].postalCode!;
+    if (mounted) {
+      setState(() {
+        // pinController.text = placemark[0].postalCode!;
+        // currentAddress.text = "${placemark[0].street}, ${placemark[0].subLocality}, ${placemark[0].locality}";
+        latitude = position.latitude.toString();
+        longitude = position.longitude.toString();
+        loc.lng = position.longitude.toString();
+        loc.lat = position.latitude.toString();
+        // callApi();
+      });
+    }
+    print("LOCATION===" + currentLocation.toString());
+  }
+
   @override
   void initState() {
     super.initState();
+    getUserCurrentLocation();
     clearAll();
 
     _getCart("0");
@@ -2905,13 +2947,18 @@ class StateCart extends State<Cart> with TickerProviderStateMixin {
           DEL_CHARGE: delCharge.toString(),
           // TAX_AMT: taxAmt.toString(),
           TAX_PER: taxPer.toString(),
-
           PAYMENT_METHOD: payVia,
           ADD_ID: selAddress,
           ISWALLETBALUSED: isUseWallet! ? "1" : "0",
           WALLET_BAL_USED: usedBal.toString(),
-          ORDER_NOTE: noteC.text
+          ORDER_NOTE: noteC.text,
         };
+        if(latitude != null || latitude != ''){
+          parameter['latitude'] = latitude ?? "";
+        }
+        if(longitude != null || longitude != ''){
+          parameter['longitude'] = longitude ?? "";
+        }
 
         if (isTimeSlot!) {
           parameter[DELIVERY_TIME] = selTime ?? 'Anytime';
@@ -2933,8 +2980,7 @@ class StateCart extends State<Cart> with TickerProviderStateMixin {
           parameter[ACTIVE_STATUS] = WAITING;
         }
         print(parameter.toString());
-        Response response =
-        await post(placeOrderApi, body: parameter, headers: headers)
+        Response response = await post(placeOrderApi, body: parameter, headers: headers)
             .timeout(Duration(seconds: timeOut));
         _placeOrder = true;
         if (response.statusCode == 200) {

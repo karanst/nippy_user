@@ -6,9 +6,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:downloads_path_provider_28/downloads_path_provider_28.dart';
 import 'package:eshop_multivendor/Helper/Session.dart';
 import 'package:eshop_multivendor/Model/Order_Model.dart';
-import 'package:eshop_multivendor/Screen/Seller_Details.dart';
 import 'package:eshop_multivendor/Screen/live_track.dart';
-import 'package:eshop_multivendor/Screen/order_track_screen.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
@@ -21,6 +19,7 @@ import 'package:open_file/open_file.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:url_launcher/url_launcher.dart';
+
 import '../Helper/AppBtn.dart';
 import '../Helper/Color.dart';
 import '../Helper/Constant.dart';
@@ -707,9 +706,14 @@ class StateOrder extends State<OrderDetail>
                           elevation: 4,
                           child: ListTile(
                             onTap: (){
-
-                              Navigator.push(context, MaterialPageRoute(builder: (context)=> OrderTrackScreen()
-                                  // LiveTrackPage()
+                              print("this is driverId ${model.deliveryBoyId}  and ${orderItem.deliveryBoyId}");
+                              Navigator.push(context, MaterialPageRoute(builder: (context)=>
+                                  //OrderTrackScreen()
+                                   LiveTrackPage(
+                                     driverId: orderItem.deliveryBoyId.toString(),
+                                     data: model,
+                                     sellerData: orderItem,
+                                   )
                               ));
                             },
                             title: Text("Track Your Order"), trailing: IconButton(onPressed: (){

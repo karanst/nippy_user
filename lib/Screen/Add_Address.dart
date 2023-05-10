@@ -82,7 +82,7 @@ class StateAddress extends State<AddAddress> with TickerProviderStateMixin {
   @override
   void initState() {
     super.initState();
-
+    getCurrentLoc();
     buttonController = new AnimationController(
         duration: new Duration(milliseconds: 2000), vsync: this);
 
@@ -105,7 +105,7 @@ class StateAddress extends State<AddAddress> with TickerProviderStateMixin {
     _cityController.addListener(() {
       citySearch(_cityController.text);
     });
-
+    User item = addressList[widget.index!];
     mobileC = new TextEditingController();
     nameC = new TextEditingController();
     altMobC = new TextEditingController();
@@ -114,9 +114,8 @@ class StateAddress extends State<AddAddress> with TickerProviderStateMixin {
     stateC = new TextEditingController();
     countryC = new TextEditingController();
     landmarkC = new TextEditingController();
-
     if (widget.update!) {
-      User item = addressList[widget.index!];
+
 
       mobileC!.text = item.mobile!;
       nameC!.text = item.name!;
@@ -127,8 +126,6 @@ class StateAddress extends State<AddAddress> with TickerProviderStateMixin {
       stateC!.text = item.state!;
       countryC!.text = item.country!;
       stateC!.text = item.state!;
-      latitude = item.latitude;
-      longitude = item.longitude;
 
       type = item.type;
       city = item.cityId;
@@ -1414,8 +1411,11 @@ class StateAddress extends State<AddAddress> with TickerProviderStateMixin {
   Future<void> getCurrentLoc() async {
     Position position = await Geolocator.getCurrentPosition(
         desiredAccuracy: LocationAccuracy.high);
-    latitude = position.latitude.toString();
-    longitude = position.longitude.toString();
+    setState((){
+      latitude = position.latitude.toString();
+      longitude = position.longitude.toString();
+    });
+    print("this is my current lat long $latitude and $longitude");
 
     List<Placemark> placemark = await placemarkFromCoordinates(
         double.parse(latitude!), double.parse(longitude!),
