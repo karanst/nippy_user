@@ -40,10 +40,11 @@ Future<bool> isNetworkAvailable() async {
 
 back() {
   return BoxDecoration(
+
     gradient: LinearGradient(
         begin: Alignment.topLeft,
         end: Alignment.bottomRight,
-        colors: [colors.grad1Color, colors.grad2Color],
+        colors: [colors.whiteTemp.withOpacity(0.4), colors.grad2Color],
         stops: [0, 1]),
   );
 }

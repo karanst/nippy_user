@@ -69,6 +69,7 @@ dependencies:
   location: ^4.4.0
   firebase_core: ^1.17.1
   firebase_auth: ^3.0.1
+  google_maps_place_picker_mb:
   firebase_messaging: ^11.2.10
   firebase_database: ^9.0.5
   flutter_polyline_points: ^1.0.0

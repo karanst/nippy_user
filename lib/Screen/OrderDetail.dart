@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
+import 'dart:math';
 
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:downloads_path_provider_28/downloads_path_provider_28.dart';
@@ -74,7 +75,20 @@ class StateOrder extends State<OrderDetail>
       throw 'Could not launch $url';
     }
   }
-
+  double calculateDistance(lat1, lon1, lat2, lon2) {
+    try {
+      var p = 0.017453292519943295;
+      var c = cos;
+      var a = 0.5 -
+          c((lat2 - lat1) * p) / 2 +
+          c(lat1 * p) * c(lat2 * p) * (1 - c((lon2 - lon1) * p)) / 2;
+      return 12742 * asin(sqrt(a));
+    } on Exception catch (exception) {
+      return 0; // only executed if error is of type Exception
+    } catch (error) {
+      return 0; // executed for errors of all types other than Exception
+    }
+  }
   @override
   void initState() {
     super.initState();
@@ -675,16 +689,94 @@ class StateOrder extends State<OrderDetail>
                                 ),
                               )
                             ]),
-                            Text(
-                              CUR_CURRENCY! + " " + orderItem.price!,
-                              style: Theme.of(context)
-                                  .textTheme
-                                  .subtitle1!
-                                  .copyWith(
+
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                children: [
+                              Text(
+                                getTranslated(context, 'SUBTOTAL')! + ":",
+                                style: Theme.of(context)
+                                    .textTheme
+                                    .subtitle2!
+                                    .copyWith(
+                                    color: Theme.of(context)
+                                        .colorScheme
+                                        .lightBlack2),
+                              ),
+                              Padding(
+                                padding: EdgeInsetsDirectional.only(start: 5.0),
+                                child: Text(
+                                  CUR_CURRENCY! + " " + (double.parse(orderItem.price!)).toStringAsFixed(2),
+                                  style: Theme.of(context)
+                                      .textTheme
+                                      .subtitle2!
+                                      .copyWith(
                                       color: Theme.of(context)
                                           .colorScheme
-                                          .fontColor),
-                            ),
+                                          .lightBlack),
+                                ),
+                              )
+                            ]),
+                            orderItem.packageCharge != null || orderItem.packageCharge !=''?
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                children: [
+                              Text(
+                                getTranslated(context, 'PACKAGE_CHARGE')! + ":",
+                                style: Theme.of(context)
+                                    .textTheme
+                                    .subtitle2!
+                                    .copyWith(
+                                    color: Theme.of(context)
+                                        .colorScheme
+                                        .lightBlack2),
+                              ),
+                              Padding(
+                                padding: EdgeInsetsDirectional.only(start: 5.0),
+                                child: Text(
+                                  CUR_CURRENCY! + " " + (double.parse(orderItem.packageCharge!)).toStringAsFixed(2),
+                                  style: Theme.of(context)
+                                      .textTheme
+                                      .subtitle2!
+                                      .copyWith(
+                                      color: Theme.of(context)
+                                          .colorScheme
+                                          .lightBlack),
+                                ),
+                              )
+                            ])
+                            : SizedBox.shrink(),
+                            Row(
+                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Text(
+                                    getTranslated(context, 'TOTAL_LBL')! + ":",
+                                    style: Theme.of(context)
+                                        .textTheme
+                                        .subtitle2!
+                                        .copyWith(
+                                        color: Theme.of(context)
+                                            .colorScheme
+                                            .lightBlack2),
+                                  ),
+                                  Padding(
+                                    padding: EdgeInsetsDirectional.only(start: 5.0),
+                                    child: Text(
+                                        orderItem.packageCharge != null || orderItem.packageCharge != ''?
+                                      CUR_CURRENCY! + " " + (double.parse(orderItem.price!) + double.parse(orderItem.packageCharge!)).toStringAsFixed(2)
+                                      : CUR_CURRENCY! + " " + (double.parse(orderItem.price!)).toStringAsFixed(2),
+                                      style: Theme.of(context)
+                                          .textTheme
+                                          .subtitle1!
+                                          .copyWith(
+                                          color: Theme.of(context)
+                                              .colorScheme
+                                              .fontColor),
+                                    ),
+                                  )
+                                ]),
+
+
                             //  Text(orderItem.status)
                           ],
                         ),
@@ -702,6 +794,37 @@ class StateOrder extends State<OrderDetail>
                     mainAxisSize: MainAxisSize.min,
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                        Text(
+                          getTranslated(context, 'DISTANCE')! + ":",
+                          style: Theme.of(context)
+                              .textTheme
+                              .subtitle2!
+                              .copyWith(
+                              color: Theme.of(context)
+                                  .colorScheme
+                                  .black),
+                        ),
+                        Padding(
+                          padding: EdgeInsetsDirectional.only(start: 5.0),
+                          child: Text(
+                            calculateDistance(double.parse(model.lat.toString()),
+                                double.parse(model.long.toString()),
+                                double.parse(orderItem.sellerLat.toString()),
+                                double.parse(orderItem.sellerLong.toString())).toStringAsFixed(2) + 'Kms',
+                            style: Theme.of(context)
+                                .textTheme
+                                .subtitle2!
+                                .copyWith(
+                              fontWeight: FontWeight.w600,
+                                color: Theme.of(context)
+                                    .colorScheme
+                                    .lightBlack),
+                          ),
+                        )
+                      ]),
                       Card(
                           elevation: 4,
                           child: ListTile(
@@ -711,6 +834,10 @@ class StateOrder extends State<OrderDetail>
                                   //OrderTrackScreen()
                                    LiveTrackPage(
                                      driverId: orderItem.deliveryBoyId.toString(),
+                                     distance: calculateDistance(double.parse(model.lat.toString()),
+                                         double.parse(model.long.toString()),
+                                         double.parse(orderItem.sellerLat.toString()),
+                                         double.parse(orderItem.sellerLong.toString())).toStringAsFixed(2) + 'Kms',
                                      data: model,
                                      sellerData: orderItem,
                                    )

@@ -1,15 +1,15 @@
 import 'dart:async';
-import 'package:eshop_multivendor/Helper/app_assets.dart';
+
 import 'package:eshop_multivendor/Provider/SettingProvider.dart';
 import 'package:eshop_multivendor/Screen/Intro_Slider.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
+
 import '../Helper/Color.dart';
 import '../Helper/Session.dart';
 import '../Helper/String.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 
 //splash screen of app
 class Splash extends StatefulWidget {
@@ -30,7 +30,7 @@ class _SplashScreen extends State<Splash> {
     // ));
 
     super.initState();
-    startTime();
+     startTime();
   }
 
   @override
@@ -43,6 +43,12 @@ class _SplashScreen extends State<Splash> {
       key: _scaffoldKey,
       body: Stack(
         children: <Widget>[
+          Image.asset(
+            'assets/images/doodle.png',
+            fit: BoxFit.fill,
+            width: double.infinity,
+            height: double.infinity,
+          ),
           Container(
             width: double.infinity,
             height: double.infinity,
@@ -66,12 +72,7 @@ class _SplashScreen extends State<Splash> {
               // ),
             ),
           ),
-          Image.asset(
-            'assets/images/doodle.png',
-            fit: BoxFit.fill,
-            width: double.infinity,
-            height: double.infinity,
-          ),
+
         ],
       ),
     );

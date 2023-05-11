@@ -110,8 +110,10 @@ class _HomePageState extends State<HomePage>
   }
 
   double? lat, long;
+  String? address;
   LocationPermission? permission;
   Position? currentLocation;
+
   Future getUserCurrentLocation() async {
 
     permission = await Geolocator.requestPermission();
@@ -138,7 +140,7 @@ class _HomePageState extends State<HomePage>
     if (mounted) {
       setState(() {
         pinController.text = placemark[0].postalCode!;
-        currentAddress.text = "${placemark[0].street}, ${placemark[0].subLocality}, ${placemark[0].locality}";
+        address = "${placemark[0].street}, ${placemark[0].subLocality}, ${placemark[0].locality}";
         latitude = position.latitude.toString();
         longitude = position.longitude.toString();
         loc.lng = position.longitude.toString();
@@ -157,7 +159,7 @@ class _HomePageState extends State<HomePage>
   @override
   void initState() {
     super.initState();
-    getUserCurrentLocation();
+     getUserCurrentLocation();
     // getCurrentLoc();
     buttonController = new AnimationController(
         duration: new Duration(milliseconds: 2000), vsync: this);
@@ -175,7 +177,7 @@ class _HomePageState extends State<HomePage>
       ),
     );
 
-    WidgetsBinding.instance!.addPostFrameCallback((_) => _animateSlider());
+    WidgetsBinding.instance.addPostFrameCallback((_) => _animateSlider());
   }
 
   @override
@@ -191,6 +193,91 @@ class _HomePageState extends State<HomePage>
                   mainAxisAlignment: MainAxisAlignment.start,
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
+                    // InkWell(
+                    //   onTap: () {
+                    //     Navigator.push(
+                    //       context,
+                    //       MaterialPageRoute(
+                    //         builder: (context) => PlacePicker(
+                    //           apiKey: Platform.isAndroid
+                    //               ? "AIzaSyB0uPBgryG9RisP8_0v50Meds1ZePMwsoY"
+                    //               : "AIzaSyB0uPBgryG9RisP8_0v50Meds1ZePMwsoY",
+                    //           onPlacePicked: (result) {
+                    //             print(result.formattedAddress);
+                    //             setState(() {
+                    //               address =
+                    //                   result.formattedAddress.toString();
+                    //               lat = result.geometry!.location.lat;
+                    //               long = result.geometry!.location.lng;
+                    //             });
+                    //             Navigator.of(context).pop();
+                    //           },
+                    //           initialPosition: LatLng(
+                    //               22.719568,75.857727),
+                    //           useCurrentLocation: true,
+                    //         ),
+                    //       ),
+                    //     );
+                    //     // Navigator.push(
+                    //     //   context,
+                    //     //   MaterialPageRoute(
+                    //     //     builder: (context) => PlacePicker(
+                    //     //       apiKey: Platform.isAndroid
+                    //     //           ? "AIzaSyBxsWdUSLMXzjxD6X-IOKjZMp3aMoxJfKc"
+                    //     //           : "AIzaSyBxsWdUSLMXzjxD6X-IOKjZMp3aMoxJfKc",
+                    //     //       onPlacePicked: (result) {
+                    //     //         print(result.formattedAddress);
+                    //     //         setState(() {
+                    //     //           addressController.text =
+                    //     //               result.formattedAddress.toString();
+                    //     //           pickLat =
+                    //     //               result.geometry!.location.lat;
+                    //     //           pickLong =
+                    //     //               result.geometry!.location.lng;
+                    //     //         });
+                    //     //         Navigator.of(context).pop();
+                    //     //       },
+                    //     //       initialPosition: LatLng(22.719568,75.857727
+                    //     //           // double.parse(widget.lat.toString()), double.parse(widget.long.toString())
+                    //     //   ),
+                    //     //       useCurrentLocation: true,
+                    //     //     ),
+                    //     //   ),
+                    //     // );
+                    //     // _getPickLocation();
+                    //   },
+                    //   child: Padding(
+                    //     padding: const EdgeInsets.only(left: 10.0, right: 10),
+                    //     child: Container(
+                    //         padding: EdgeInsets.only(left: 15, top: 4, bottom: 4, right: 8),
+                    //         height: 40,
+                    //         decoration: BoxDecoration(
+                    //             color: Theme.of(context).colorScheme.lightWhite,
+                    //             borderRadius: BorderRadius.circular(50),
+                    //             border: Border.all(color: colors.primary)),
+                    //         width: MediaQuery.of(context).size.width,
+                    //         child:
+                    //         Row(
+                    //           mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    //           children: [
+                    //             Icon(Icons.location_on_outlined, color: colors.primary,),
+                    //             Container(
+                    //               width: MediaQuery.of(context).size.width - 80,
+                    //               child: Text(address == null ?"Select Location"
+                    //                   : address.toString(),
+                    //                 maxLines: 1,
+                    //                 overflow: TextOverflow.ellipsis,
+                    //                 style: TextStyle(
+                    //                     color: Theme.of(context).colorScheme.fontColor,
+                    //                     fontSize: 16
+                    //                 ),),
+                    //             ),
+                    //           ],
+                    //         )
+                    //
+                    //     ),
+                    //   ),
+                    // ),
                     _deliverPincode(),
                     _catList(),
                     Padding(

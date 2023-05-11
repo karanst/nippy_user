@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:eshop_multivendor/Helper/Color.dart';
 import 'package:eshop_multivendor/Helper/Session.dart';
 import 'package:eshop_multivendor/Helper/String.dart';
 import 'package:eshop_multivendor/Model/Order_Model.dart';
@@ -14,10 +15,11 @@ import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:provider/provider.dart';
 
 class LiveTrackPage extends StatefulWidget {
-  final String? driverId;
+  final String? driverId, distance;
   final OrderModel? data;
   final OrderItem? sellerData;
-  const LiveTrackPage({Key? key, this.driverId, this.data, this.sellerData}) : super(key: key);
+
+  const LiveTrackPage({Key? key, this.driverId, this.distance, this.data, this.sellerData}) : super(key: key);
 
   @override
   _LiveTrackPageState createState() => _LiveTrackPageState();
@@ -27,8 +29,6 @@ class _LiveTrackPageState extends State<LiveTrackPage> {
 
 
   Stream<DatabaseEvent> stream = ref.onValue;
-
-
 
 
   GoogleMapController? mapController;
@@ -71,6 +71,7 @@ class _LiveTrackPageState extends State<LiveTrackPage> {
       );
     });
   }
+
   Future<void> _driver(dlat , dLong) async {
     final GoogleMapController controller = await _controller.future;
     controller.animateCamera(CameraUpdate.newCameraPosition(_kLake));
@@ -369,6 +370,42 @@ class _LiveTrackPageState extends State<LiveTrackPage> {
             : Center(
         child: CircularProgressIndicator(),
     ),
+      floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
+      floatingActionButton: Container(
+        width: MediaQuery.of(context).size.width/2,
+        padding: EdgeInsets.all(10),
+        decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(15),
+            color: colors.primary
+        ),
+        child:   Padding(
+          padding: EdgeInsets.symmetric(horizontal: 15.0, vertical: 3),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Text("Distance - ",
+                // getTranslated(context,
+                //     "PAYMENT_MTHD")! +
+                //     " - ",
+                style: Theme.of(context)
+                    .textTheme
+                    .subtitle2!
+                    .copyWith(color: colors.whiteTemp, fontSize: 14),
+              ),
+              Text(
+                widget.distance != null || widget.distance != ''?
+                widget.distance.toString()
+                    : '',
+                style: Theme.of(context)
+                    .textTheme
+                    .subtitle2!
+                    .copyWith(color: colors.whiteTemp, fontWeight: FontWeight.w600, fontSize: 14),
+              ),
+
+            ],
+          ),
+        ),
+      ),
       // GoogleMap(
       //   mapType: MapType.normal,
       //   initialCameraPosition: _kGooglePlex,

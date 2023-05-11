@@ -462,18 +462,19 @@ class _SendOtpState extends State<SendOtp> with TickerProviderStateMixin {
             ? Stack(
                 children: [
                   backBtn(),
+                  Image.asset(
+                    'assets/images/doodle.png',
+                    // color: colors.primary,
+                    fit: BoxFit.fill,
+                    width: double.infinity,
+                    height: double.infinity,
+                  ),
                   Container(
                     width: double.infinity,
                     height: double.infinity,
                     decoration: back(),
                   ),
-                  Image.asset(
-                    'assets/images/doodle.png',
-                    color: colors.primary,
-                    fit: BoxFit.fill,
-                    width: double.infinity,
-                    height: double.infinity,
-                  ),
+
                   getLoginContainer(),
                   getLogo(),
                 ],

@@ -1,16 +1,12 @@
 import 'dart:async';
-import 'dart:convert';
 
 import 'package:eshop_multivendor/Helper/Color.dart';
-import 'package:eshop_multivendor/Helper/Constant.dart';
 import 'package:eshop_multivendor/Helper/app_assets.dart';
 import 'package:eshop_multivendor/Helper/cropped_container.dart';
 import 'package:eshop_multivendor/Provider/SettingProvider.dart';
-import 'package:eshop_multivendor/Provider/UserProvider.dart';
 import 'package:eshop_multivendor/Screen/Set_Password.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:http/http.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:sms_autofill/sms_autofill.dart';
@@ -519,18 +515,19 @@ class _MobileOTPState extends State<VerifyOtp> with TickerProviderStateMixin {
         key: _scaffoldKey,
         body: Stack(
           children: [
+            Image.asset(
+              'assets/images/doodle.png',
+              // color: colors.primary,
+              fit: BoxFit.fill,
+              width: double.infinity,
+              height: double.infinity,
+            ),
             Container(
               width: double.infinity,
               height: double.infinity,
               decoration: back(),
             ),
-            Image.asset(
-              'assets/images/doodle.png',
-              color: colors.primary,
-              fit: BoxFit.fill,
-              width: double.infinity,
-              height: double.infinity,
-            ),
+
             getLoginContainer(),
             getLogo(),
           ],

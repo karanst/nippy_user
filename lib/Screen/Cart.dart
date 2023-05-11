@@ -108,8 +108,8 @@ class StateCart extends State<Cart> with TickerProviderStateMixin {
 
   LocationPermission? permission;
   Position? currentLocation;
-  Future getUserCurrentLocation() async {
 
+  Future getUserCurrentLocation() async {
     permission = await Geolocator.requestPermission();
     await Geolocator.getCurrentPosition(desiredAccuracy: LocationAccuracy.high)
         .then((position) {
@@ -445,6 +445,7 @@ class StateCart extends State<Cart> with TickerProviderStateMixin {
                                   ),
                                 ),
                               ),
+
                               GestureDetector(
                                 child: Padding(
                                   padding: const EdgeInsetsDirectional.only(
@@ -468,6 +469,7 @@ class StateCart extends State<Cart> with TickerProviderStateMixin {
                               )
                             ],
                           ),
+
                           cartList[index]
                               .productList![0]
                               .prVarientList![selectedPos]
@@ -547,6 +549,16 @@ class StateCart extends State<Cart> with TickerProviderStateMixin {
                               ),
                             ],
                           ),
+                          cartList[index].packingCharge != null || cartList[index].packingCharge != ''?
+                          Text(
+                            "Packing Charge : $CUR_CURRENCY ${cartList[index].packingCharge.toString()}",
+                            style: TextStyle(
+                              fontSize: 12,
+                                color:
+                                Theme.of(context).colorScheme.fontColor,
+                                fontWeight: FontWeight.normal),
+                          )
+                              : SizedBox.shrink(),
                           cartList[index].productList![0].availability == "1" ||
                               cartList[index].productList![0].stockType ==
                                   "null"
@@ -901,6 +913,7 @@ class StateCart extends State<Cart> with TickerProviderStateMixin {
                                 ],
                               ),
                             ),
+
                             cartList[index].productList![0].availability ==
                                 "1" ||
                                 cartList[index].productList![0].stockType ==
@@ -986,6 +999,7 @@ class StateCart extends State<Cart> with TickerProviderStateMixin {
                                 : Container(),
                           ],
                         ),
+
                       ],
                     ),
                   ),
@@ -1013,6 +1027,23 @@ class StateCart extends State<Cart> with TickerProviderStateMixin {
                 )
               ],
             ),
+            cartList[index].packingCharge != null || cartList[index].packingCharge != ''?
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Text(
+                  getTranslated(context, 'PACKAGE_CHARGE')!,
+                  style: TextStyle(
+                      color: Theme.of(context).colorScheme.lightBlack2),
+                ),
+                Text(
+                "$CUR_CURRENCY ${cartList[index].packingCharge.toString()}",
+                  style: TextStyle(
+                      color: Theme.of(context).colorScheme.lightBlack2),
+                ),
+              ],
+            )
+                : SizedBox.shrink(),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
@@ -1044,11 +1075,17 @@ class StateCart extends State<Cart> with TickerProviderStateMixin {
                 )
                     : Container(),
                 Text(
+    cartList[index].packingCharge != null || cartList[index].packingCharge != ''?
                   CUR_CURRENCY! +
                       " " +
-                      (double.parse(cartList[index].perItemTotal!))
+                      (double.parse(cartList[index].perItemTotal!) + double.parse(cartList[index].packingCharge.toString()))
                           .toStringAsFixed(2)
-                          .toString(),
+                          .toString()
+                  : CUR_CURRENCY! +
+        " " +
+        (double.parse(cartList[index].perItemTotal!))
+            .toStringAsFixed(2)
+            .toString(),
                   //+ " "+cartList[index].productList[0].taxrs,
                   style: TextStyle(
                       fontWeight: FontWeight.bold,
@@ -1320,7 +1357,7 @@ class StateCart extends State<Cart> with TickerProviderStateMixin {
     if (_isNetworkAvail) {
       try {
         var parameter = {USER_ID: CUR_USERID, SAVE_LATER: save};
-
+        print("this is get cart param $parameter");
         Response response =
         await post(getCartApi, body: parameter, headers: headers)
             .timeout(Duration(seconds: timeOut));
@@ -1330,6 +1367,7 @@ class StateCart extends State<Cart> with TickerProviderStateMixin {
         String? msg = getdata["message"];
         if (!error) {
           var data = getdata["data"];
+
 
           oriPrice = double.parse(getdata[SUB_TOTAL]);
 
@@ -2155,6 +2193,7 @@ class StateCart extends State<Cart> with TickerProviderStateMixin {
         ? cartEmpty()
         : Column(
       children: <Widget>[
+
         Expanded(
           child: Padding(
               padding: const EdgeInsets.symmetric(horizontal: 10.0),
